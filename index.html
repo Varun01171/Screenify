@@ -1,15 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screener - HR Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading dashboard...</p>
+            <p class="loading-subtitle">Connecting to PostgreSQL...</p>
+        </div>
+    </div>
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>HR2</title>
-    </head>
+    <!-- Landing Page -->
+    <div id="landing-page" class="landing-page">
+        <nav class="landing-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <div class="thunder-logo">
+                        <div class="thunder-icon">⚡</div>
+                    </div>
+                    <span class="brand-text">Resume Screener</span>
+                </div>
+                <button id="landing-login-btn" class="nav-login-btn">Sign In</button>
+            </div>
+        </nav>
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+        <main class="landing-main">
+            <div class="landing-container">
+                <div class="landing-hero">
+                    <div class="hero-content">
+                        <h1 class="hero-title">AI-Powered Resume Screening</h1>
+                        <p class="hero-subtitle">Streamline your hiring process with intelligent candidate screening, automated chat interviews, and comprehensive analytics powered by PostgreSQL.</p>
+                        <div class="hero-features">
+                            <div class="feature">
+                                <i data-lucide="upload"></i>
+                                <span>Smart Resume Analysis</span>
+                            </div>
+                            <div class="feature">
+                                <i data-lucide="message-circle"></i>
+                                <span>Automated Screening</span>
+                            </div>
+                            <div class="feature">
+                                <i data-lucide="users"></i>
+                                <span>Candidate Management</span>
+                            </div>
+                            <div class="feature">
+                                <i data-lucide="database"></i>
+                                <span>PostgreSQL Powered</span>
+                            </div>
+                        </div>
+                        <button id="get-started-btn" class="hero-cta">Get Started</button>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="dashboard-preview">
+                            <div class="preview-header"></div>
+                            <div class="preview-content">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-main"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="login-page hidden">
+        <div class="login-container">
+            <div class="login-form-container">
+                <div class="login-header">
+                    <div class="thunder-logo">
+                        <div class="thunder-icon">⚡</div>
+                    </div>
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to your HR Dashboard</p>
+                </div>
+
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="remember-me" name="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">
+                        <span class="btn-text">Sign In</span>
+                        <div class="btn-spinner hidden"></div>
+                    </button>
+
+                    <div id="login-error" class="login-error hidden"></div>
+                </form>
+
+                <div class="login-footer">
+                    <p>Demo Credentials:</p>
+                    <div class="demo-creds">
+                        <span>Email: demo@company.com</span>
+                        <span>Password: demo123</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <div class="thunder-logo">
+                        <div class="thunder-icon">⚡</div>
+                    </div>
+                    <div class="brand-info">
+                        <h1>Resume Screener</h1>
+                        <div class="brand-subtitle">
+                            <span>HR Dashboard</span>
+                            <div class="db-status">
+                                <i data-lucide="database"></i>
+                                <span id="db-status-text">PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-view="dashboard">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="upload">
+                            <i data-lucide="upload"></i>
+                            <span>Upload Resume</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="chat">
+                            <i data-lucide="message-circle"></i>
+                            <span>Screening</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="candidates">
+                            <i data-lucide="users"></i>
+                            <span>Candidates</span>
+                            <span id="candidate-filter-badge" class="nav-badge hidden"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="chatlinks">
+                            <i data-lucide="link"></i>
+                            <span>Chat Links</span>
+                            <span id="chatlinks-badge" class="nav-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="viewer">
+                            <i data-lucide="file-text"></i>
+                            <span>Resume Viewer</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="settings">
+                            <i data-lucide="settings"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="sidebar-toggle" class="sidebar-toggle">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="search-container">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="global-search" placeholder="Search candidates, resumes, or conversations...">
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Connection Status -->
+                    <div id="connection-status" class="connection-status">
+                        <i data-lucide="activity"></i>
+                        <span>PostgreSQL Online</span>
+                    </div>
+
+                    <!-- Refresh Button -->
+                    <button id="refresh-btn" class="refresh-btn">
+                        <i data-lucide="refresh-cw"></i>
+                        <span>Refresh</span>
+                    </button>
+
+                    <!-- Demo Button -->
+                    <button id="demo-btn" class="demo-btn">
+                        <i data-lucide="play"></i>
+                        <span>Demo Chat</span>
+                    </button>
+
+                    <!-- Notifications -->
+                    <div class="notifications-dropdown">
+                        <button id="notifications-btn" class="notifications-btn">
+                            <i data-lucide="bell"></i>
+                            <span id="notification-count" class="notification-count hidden">0</span>
+                        </button>
+                        <div id="notifications-menu" class="notifications-menu hidden">
+                            <div class="notifications-header">
+                                <h3>Notifications (<span id="unread-count">0</span> unread)</h3>
+                                <button id="mark-all-read" class="mark-all-read">Mark all read</button>
+                            </div>
+                            <div id="notifications-list" class="notifications-list">
+                                <!-- Notifications will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Profile -->
+                    <div class="user-dropdown">
+                        <button id="user-btn" class="user-btn">
+                            <div class="user-avatar">
+                                <span id="user-initials">JD</span>
+                            </div>
+                            <div class="user-info">
+                                <span id="user-name">John Demo</span>
+                                <span id="user-role">HR Manager</span>
+                            </div>
+                            <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div id="user-menu" class="user-menu hidden">
+                            <div class="user-menu-header">
+                                <div class="user-avatar large">
+                                    <span id="user-initials-large">JD</span>
+                                </div>
+                                <div class="user-details">
+                                    <p class="user-name">John Demo</p>
+                                    <p class="user-role">HR Manager</p>
+                                    <p class="user-email">demo@company.com</p>
+                                </div>
+                            </div>
+                            <div class="user-menu-actions">
+                                <a href="#" class="menu-item" data-view="profile">
+                                    <i data-lucide="edit-3"></i>
+                                    <span>Edit Profile</span>
+                                </a>
+                                <a href="#" class="menu-item" data-view="settings">
+                                    <i data-lucide="settings"></i>
+                                    <span>Account Settings</span>
+                                </a>
+                                <a href="#" class="menu-item">
+                                    <i data-lucide="shield"></i>
+                                    <span>Privacy & Security</span>
+                                </a>
+                                <div class="menu-divider"></div>
+                                <a href="#" class="menu-item logout" id="logout-btn">
+                                    <i data-lucide="log-out"></i>
+                                    <span>Sign Out</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- Status Alerts -->
+                <div id="status-alerts" class="status-alerts">
+                    <!-- PostgreSQL Status Alert -->
+                    <div id="postgres-alert" class="alert alert-info">
+                        <i data-lucide="database"></i>
+                        <div class="alert-content">
+                            <strong>PostgreSQL Connected:</strong> <span id="total-candidates">42</span> total candidates in database
+                            <div class="alert-secondary">
+                                <i data-lucide="activity"></i>
+                                <span>Real-time sync active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Links Alert -->
+                    <div id="chatlinks-alert" class="alert alert-success hidden">
+                        <i data-lucide="zap"></i>
+                        <div class="alert-content">
+                            <strong><span id="active-links-count">0</span> chat links</strong> generated and ready to share with candidates!
+                            <button class="alert-action" data-view="chatlinks">
+                                <i data-lucide="link"></i>
+                                View All Links
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard View -->
+                <div id="view-dashboard" class="view-content active">
+                    <div class="dashboard-header">
+                        <h1>Dashboard Overview</h1>
+                        <p>Monitor your hiring pipeline and candidate screening progress</p>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card" data-filter="all">
+                            <div class="metric-icon">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3 id="metric-total">42</h3>
+                                <p>Total Candidates</p>
+                            </div>
+                        </div>
+                        <div class="metric-card" data-filter="pending">
+                            <div class="metric-icon">
+                                <i data-lucide="clock"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3 id="metric-pending">15</h3>
+                                <p>Pending Review</p>
+                            </div>
+                        </div>
+                        <div class="metric-card" data-filter="screening">
+                            <div class="metric-icon">
+                                <i data-lucide="message-circle"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3 id="metric-screening">8</h3>
+                                <p>In Screening</p>
+                            </div>
+                        </div>
+                        <div class="metric-card" data-filter="shortlisted">
+                            <div class="metric-icon">
+                                <i data-lucide="check-circle"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3 id="metric-shortlisted">12</h3>
+                                <p>Shortlisted</p>
+                            </div>
+                        </div>
+                        <div class="metric-card" data-filter="hired">
+                            <div class="metric-icon">
+                                <i data-lucide="user-plus"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3 id="metric-hired">5</h3>
+                                <p>Hired</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i data-lucide="trending-up"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3 id="metric-score">78%</h3>
+                                <p>Average Score</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="recent-activity">
+                            <h2>Recent Activity</h2>
+                            <div id="recent-activity-list" class="activity-list">
+                                <!-- Recent activities will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="quick-actions">
+                            <h2>Quick Actions</h2>
+                            <div class="actions-grid">
+                                <button class="action-card" data-view="upload">
+                                    <i data-lucide="upload"></i>
+                                    <h3>Upload Resume</h3>
+                                    <p>Add new candidate</p>
+                                </button>
+                                <button class="action-card" data-view="chat">
+                                    <i data-lucide="message-circle"></i>
+                                    <h3>Start Screening</h3>
+                                    <p>Begin AI interview</p>
+                                </button>
+                                <button class="action-card" data-view="candidates">
+                                    <i data-lucide="users"></i>
+                                    <h3>View Candidates</h3>
+                                    <p>Manage pipeline</p>
+                                </button>
+                                <button class="action-card" data-view="chatlinks">
+                                    <i data-lucide="link"></i>
+                                    <h3>Chat Links</h3>
+                                    <p>Send to candidates</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload View -->
+                <div id="view-upload" class="view-content">
+                    <div class="upload-header">
+                        <h1>Upload Resume</h1>
+                        <p>Upload candidate resumes for AI-powered analysis and screening</p>
+                    </div>
+
+                    <div class="upload-container">
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-content">
+                                <div class="upload-icon">
+                                    <i data-lucide="upload"></i>
+                                </div>
+                                <h3>Drag & drop resume files here</h3>
+                                <p>or click to select files</p>
+                                <input type="file" id="file-input" accept=".pdf,.doc,.docx" multiple hidden>
+                                <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+                                    Choose Files
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="upload-progress" class="upload-progress hidden">
+                            <div class="progress-header">
+                                <h3>Processing Resume...</h3>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill"></div>
+                            </div>
+                            <p id="progress-status">Uploading file...</p>
+                        </div>
+
+                        <div id="upload-results" class="upload-results hidden">
+                            <!-- Upload results will be shown here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat View -->
+                <div id="view-chat" class="view-content">
+                    <div class="chat-header">
+                        <h1>AI Screening Chat</h1>
+                        <p>Conduct automated interviews with candidates</p>
+                    </div>
+
+                    <div class="chat-container">
+                        <div class="chat-sidebar">
+                            <h3>Active Sessions</h3>
+                            <div id="chat-sessions" class="chat-sessions">
+                                <!-- Chat sessions will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="chat-main">
+                            <div id="chat-placeholder" class="chat-placeholder">
+                                <div class="placeholder-content">
+                                    <i data-lucide="message-circle"></i>
+                                    <h3>No Active Chat Session</h3>
+                                    <p>Select a session from the sidebar or generate a new chat link for candidates</p>
+                                    <button class="action-btn" data-view="chatlinks">
+                                        <i data-lucide="link"></i>
+                                        Generate Chat Links
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="chat-interface" class="chat-interface hidden">
+                                <div class="chat-header-info">
+                                    <div class="candidate-info">
+                                        <h3 id="chat-candidate-name">Sarah Johnson</h3>
+                                        <p id="chat-candidate-position">Senior Software Engineer</p>
+                                    </div>
+                                    <div class="chat-actions">
+                                        <button class="chat-action">
+                                            <i data-lucide="download"></i>
+                                            Export
+                                        </button>
+                                        <button class="chat-action">
+                                            <i data-lucide="x"></i>
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="chat-messages" class="chat-messages">
+                                    <!-- Chat messages will be populated here -->
+                                </div>
+
+                                <div class="chat-input">
+                                    <input type="text" id="chat-message-input" placeholder="Type your message...">
+                                    <button id="send-message" class="send-btn">
+                                        <i data-lucide="send"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Candidates View -->
+                <div id="view-candidates" class="view-content">
+                    <div class="candidates-header">
+                        <h1>Candidate Management</h1>
+                        <div class="candidates-controls">
+                            <div class="filter-tabs">
+                                <button class="filter-tab active" data-filter="all">All</button>
+                                <button class="filter-tab" data-filter="pending">Pending</button>
+                                <button class="filter-tab" data-filter="screening">Screening</button>
+                                <button class="filter-tab" data-filter="shortlisted">Shortlisted</button>
+                                <button class="filter-tab" data-filter="rejected">Rejected</button>
+                                <button class="filter-tab" data-filter="hired">Hired</button>
+                            </div>
+                            <div class="search-filter">
+                                <input type="text" id="candidate-search" placeholder="Search candidates...">
+                                <button class="search-btn">
+                                    <i data-lucide="search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="candidates-list" class="candidates-list">
+                        <!-- Candidates will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Chat Links View -->
+                <div id="view-chatlinks" class="view-content">
+                    <div class="chatlinks-header">
+                        <h1>Chat Link Management</h1>
+                        <p>Generate and manage screening chat links for candidates</p>
+                    </div>
+
+                    <div class="chatlinks-container">
+                        <div class="chatlinks-actions">
+                            <button id="generate-bulk-links" class="action-btn">
+                                <i data-lucide="link"></i>
+                                Generate Links for All Pending
+                            </button>
+                            <button id="export-links" class="action-btn secondary">
+                                <i data-lucide="download"></i>
+                                Export Links
+                            </button>
+                        </div>
+
+                        <div id="chatlinks-list" class="chatlinks-list">
+                            <!-- Chat links will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Viewer -->
+                <div id="view-viewer" class="view-content">
+                    <div class="viewer-header">
+                        <h1>Resume Viewer</h1>
+                        <p>View and analyze candidate resumes</p>
+                    </div>
+
+                    <div id="viewer-placeholder" class="viewer-placeholder">
+                        <div class="placeholder-content">
+                            <i data-lucide="file-text"></i>
+                            <h3>No Resume Selected</h3>
+                            <p>Select a candidate from the candidates page to view their resume</p>
+                            <button class="action-btn" data-view="candidates">
+                                <i data-lucide="users"></i>
+                                View Candidates
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="resume-viewer" class="resume-viewer hidden">
+                        <!-- Resume content will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Settings View -->
+                <div id="view-settings" class="view-content">
+                    <div class="settings-header">
+                        <h1>Settings</h1>
+                        <p>Configure your HR dashboard preferences</p>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="settings-nav">
+                            <button class="settings-tab active" data-tab="general">General</button>
+                            <button class="settings-tab" data-tab="notifications">Notifications</button>
+                            <button class="settings-tab" data-tab="screening">Screening</button>
+                            <button class="settings-tab" data-tab="integrations">Integrations</button>
+                        </div>
+
+                        <div class="settings-content">
+                            <div id="settings-general" class="settings-panel active">
+                                <h2>General Settings</h2>
+                                <div class="setting-group">
+                                    <label>Language</label>
+                                    <select>
+                                        <option>English</option>
+                                        <option>Spanish</option>
+                                        <option>French</option>
+                                    </select>
+                                </div>
+                                <div class="setting-group">
+                                    <label>Timezone</label>
+                                    <select>
+                                        <option>UTC-8 (Pacific)</option>
+                                        <option>UTC-5 (Eastern)</option>
+                                        <option>UTC+0 (GMT)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="settings-notifications" class="settings-panel">
+                                <h2>Notification Preferences</h2>
+                                <div class="setting-group">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                        Email notifications
+                                    </label>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                        Push notifications
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="settings-screening" class="settings-panel">
+                                <h2>Screening Configuration</h2>
+                                <div class="setting-group">
+                                    <label>Default screening questions</label>
+                                    <textarea rows="4" placeholder="Enter default questions..."></textarea>
+                                </div>
+                            </div>
+
+                            <div id="settings-integrations" class="settings-panel">
+                                <h2>Integrations</h2>
+                                <div class="integration-item">
+                                    <div class="integration-info">
+                                        <i data-lucide="database"></i>
+                                        <div>
+                                            <h3>PostgreSQL Database</h3>
+                                            <p>Connected and synchronized</p>
+                                        </div>
+                                    </div>
+                                    <span class="status-badge connected">Connected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile View -->
+                <div id="view-profile" class="view-content">
+                    <div class="profile-header">
+                        <h1>Profile Settings</h1>
+                        <p>Manage your personal information and preferences</p>
+                    </div>
+
+                    <div class="profile-container">
+                        <div class="profile-form">
+                            <div class="avatar-section">
+                                <div class="avatar-large">
+                                    <span>JD</span>
+                                </div>
+                                <button class="change-avatar">Change Avatar</button>
+                            </div>
+
+                            <div class="form-section">
+                                <h2>Personal Information</h2>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>First Name</label>
+                                        <input type="text" value="John">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Last Name</label>
+                                        <input type="text" value="Demo">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" value="demo@company.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select>
+                                        <option>HR Manager</option>
+                                        <option>HR Director</option>
+                                        <option>Senior Recruiter</option>
+                                        <option>Recruiter</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="save-btn">Save Changes</button>
+                                <button class="cancel-btn">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
